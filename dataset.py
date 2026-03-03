@@ -37,6 +37,8 @@ class GE2E_Dataset(data.Dataset):
         idx_k = list(self.infos.keys)[idx]
         items = self.infos[idx_k]
 
+        print(self.infos[idx_k])
+        print(torch.load(os.path.join(self.data_dir, os.path.join(self.data_dir, items[0]))))
         feat_paths = random.sample(items, self.n_utterances)
         utterances = [
             torch.load(os.path.join(self.data_dir, path)) for path in feat_paths
