@@ -14,7 +14,7 @@ class GE2E(nn.Module):
         D is the dvector dimension. 
     """
     def __init__(self, init_w=10.0, init_b =-5.0, loss_method="softmax"):
-        super(GE2E, self)
+        super(GE2E, self).__init__()
         self.w = nn.Parameter(torch.FloatTensor([init_w]))
         self.b = nn.Parameter(torch.FloatTensor([init_b]))
 
