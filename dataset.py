@@ -28,8 +28,8 @@ class GE2E_Dataset(data.Dataset):
                     item['path'] for item in data if item['length'] >= min_seg_length and item['language'] == l 
                 ]
 
-            if len(uttrs) >= n_utterances:
-                self.infos[speaker + l] = uttrs
+                if len(uttrs) >= n_utterances:
+                    self.infos[speaker + l] = uttrs
 
     def __len__(self):
         return len(self.infos.keys())
@@ -68,7 +68,7 @@ def collate_batch(batch):
 
 def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, num_workers, language):
     dataset = GE2E_Dataset(filepath, data_dir, n_utterances, min_seg_length, language)
-        
+    print(len(dataset))
     train_set, validation_set = data.random_split(dataset, [len(dataset) - n_speakers, n_speakers])
 
     train_ld = data.DataLoader(
