@@ -1,5 +1,6 @@
 from collections import deque
 from datetime import datetime
+import os
 
 import torch
 from tqdm import tqdm
@@ -30,6 +31,11 @@ class Solver():
         self.save = save
 
         self.checkpoints = model_dir + '/checkpoints/' + datetime.now().strftime("%Y%m%d-%H%M%S")
+        try:
+            os.makedir(self.checkpoints)
+        except FileExistsError:
+            print(f'{self.checkpoints} already exists!')
+
         self.writer = SummaryWriter(model_dir + '/logs/' + datetime.now().strftime("%Y%m%d-%H%M%S"))
         
 
