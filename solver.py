@@ -1,5 +1,5 @@
 from collections import deque
-import datetime
+from datetime import datetime
 
 import torch
 from tqdm import tqdm
