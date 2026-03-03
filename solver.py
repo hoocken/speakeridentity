@@ -49,12 +49,14 @@ class Solver():
         running_train_loss = deque(maxlen=100)
         
         for item in tqdm(self.train_ld, desc='Training'):
+            print('test')
             batch = item.to(self.device)
             embeddings = self.dvector(batch).view(self.n_speakers, self.n_utterances, -1) # (N, M, D)
             loss = self.criteria(embeddings)
 
             self.optimizer.zero_grad()
             loss.backward()
+
             self.optimizer.step()
             self.scheduler.step() 
 
