@@ -27,6 +27,7 @@ class GE2E_Dataset(data.Dataset):
                 uttrs = [
                     item['path'] for item in data if item['length'] >= min_seg_length and item['language'] == l 
                 ]
+
             if len(uttrs) >= n_utterances:
                 self.infos[speaker + l] = uttrs
 
@@ -39,12 +40,12 @@ class GE2E_Dataset(data.Dataset):
 
         feat_paths = random.sample(items, self.n_utterances)
         utterances = [
-            torch.load(os.path.join(self.data_dir, path)) for path in feat_paths
+            torch.squeeze(torch.load(os.path.join(self.data_dir, path))) for path in feat_paths
         ]
 
         # Cut utterances to be of length min_seg_length
-        start = [random.randint(0, len(uttr) - self.min_seg_length) for uttr in utterances]
-        cut_utterances = [uttr[i: i + self.min_seg_length] for uttr, i in zip(utterances, start)]
+        start = [random.randint(0, uttr.shape[1] - self.min_seg_length) for uttr in utterances]
+        cut_utterances = [uttr[:, i: i + self.min_seg_length] for uttr, i in zip(utterances, start)]
         return cut_utterances
         
     def _load_speakers(self, path):
