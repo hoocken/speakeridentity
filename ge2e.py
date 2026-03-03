@@ -36,7 +36,7 @@ class GE2E(nn.Module):
         
         :returns S: Similarity matrix of shape (N, M, N) 
         """
-        n_speakers, n_utter, d_emb = input.size
+        n_speakers, n_utter, d_emb = input.shape
 
         # Expand dvec to (N, M, N, D)
         dvecs = input.unsqueeze(2).expand(n_speakers, n_utter, n_speakers, d_emb) # Have same N vector in dim 2 
