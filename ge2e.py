@@ -66,7 +66,7 @@ class GE2E(nn.Module):
 
         # Plug into CosineSimilarity
         # Should be calculate similarity between N vectors of length D (N, M, N, D)
-        F.cosine_similarity(dvecs, transformed_cent, 3, 1e-6)
+        return F.cosine_similarity(dvecs, transformed_cent, 3, 1e-6)
 
     def embed_loss_softmax(self, input: Tensor):
         """
