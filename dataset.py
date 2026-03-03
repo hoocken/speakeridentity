@@ -80,6 +80,8 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         num_workers=num_workers
     )
 
+    print(next(iter(train_ld)))
+
     validation_ld = data.DataLoader(
         validation_set,
         batch_size=n_speakers,
