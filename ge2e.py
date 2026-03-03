@@ -72,7 +72,7 @@ class GE2E(nn.Module):
         Calculates the softmax loss according to the formula below:
 
         $$
-        L(e_{ji}) = - S_{ji,j} + log \sum_{k = 1}^{N} \exp(S_{ji,k})
+        L(e_{ji}) = - S_{ji,j} + log sum_{k = 1}^{N} \exp(S_{ji,k})
         $$
         
         :param input: Calculated similarity **S**
@@ -88,7 +88,7 @@ class GE2E(nn.Module):
         Calculates the contrast loss according to the following formula:
 
         $$
-        L(e_{ji}) = 1 - \sigma(S_{ji,j}) + \underset{max}{1 \leq k \leq N, k \neq j} \sigma(S_{ji, k})
+        L(e_{ji}) = 1 - sigma(S_{ji,j}) + \underset{max}{1 \leq k \leq N, k \neq j} sigma(S_{ji, k})
         $$
         
         :param input: Calculated similarity **S**
