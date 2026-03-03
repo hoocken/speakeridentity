@@ -52,6 +52,10 @@ class GE2E_Dataset(data.Dataset):
             for line in f.readlines():
                 data = json.loads(line)
                 speaker = data['speaker']
+                
+                if not speaker in items.keys():
+                    items[speaker] = []
+                    
                 items[speaker].append(data)
         
         return items
