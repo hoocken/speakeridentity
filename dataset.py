@@ -71,7 +71,6 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         
     train_set, validation_set = data.random_split(dataset, [len(dataset) - n_speakers, n_speakers])
 
-    print(train_set[0])
     train_ld = data.DataLoader(
         train_set,
         batch_size=n_speakers,
