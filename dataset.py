@@ -40,12 +40,12 @@ class GE2E_Dataset(data.Dataset):
 
         feat_paths = random.sample(items, self.n_utterances)
         utterances = [
-            torch.squeeze(torch.load(os.path.join(self.data_dir, path))) for path in feat_paths
+            torch.squeeze(torch.load(os.path.join(self.data_dir, path))).transpose(0, 1) for path in feat_paths
         ]
 
         # Cut utterances to be of length min_seg_length
-        start = [random.randint(0, uttr.shape[1] - self.min_seg_length) for uttr in utterances]
-        cut_utterances = [uttr[:, i: i + self.min_seg_length] for uttr, i in zip(utterances, start)]
+        start = [random.randint(0, uttr.shape[0] - self.min_seg_length) for uttr in utterances]
+        cut_utterances = [uttr[i: i + self.min_seg_length] for uttr, i in zip(utterances, start)]
         return cut_utterances
         
     def _load_speakers(self, path):
@@ -79,8 +79,6 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         drop_last=False,
         num_workers=num_workers
     )
-
-    print(next(iter(train_ld)))
 
     validation_ld = data.DataLoader(
         validation_set,
