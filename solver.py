@@ -47,7 +47,6 @@ class Solver():
 
     def training(self):
         running_train_loss = deque(maxlen=100)
-        print(next(iter(self.train_ld)))
         
         for item in tqdm(self.train_ld, desc='Training'):
             batch = item.to(self.device)
