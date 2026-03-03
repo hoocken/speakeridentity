@@ -66,7 +66,7 @@ def collate_batch(batch):
 
 def build_loader(filepath, n_speakers, n_utterances, min_seg_length, num_workers, language):
     dataset = GE2E_Dataset(filepath, n_utterances, min_seg_length, language)
-    print(len(dataset))
+        
     train_set, validation_set = data.random_split(dataset, [len(dataset) - n_speakers, n_speakers])
 
     train_ld = data.DataLoader(
