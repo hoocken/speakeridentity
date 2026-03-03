@@ -12,7 +12,7 @@ from torch.utils import data
 from torch.nn.utils.rnn import pad_sequence
 
 class GE2E_Dataset(data.Dataset):
-    def ___init__(self, filepath: str, n_utterances: int, min_seg_length: int, languages: list):
+    def __init__(self, filepath: str, n_utterances: int, min_seg_length: int, languages: list):
         self.filepath = filepath
         self.speakers: dict = self._load_speakers(filepath)
         self.n_utterances = n_utterances
