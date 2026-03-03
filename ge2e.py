@@ -51,6 +51,7 @@ class GE2E(nn.Module):
         mod_cent = torch.cat([input[:, 1:, :], input[:, :-1, :]], dim=1) # Make a long array from index 1 to -2 in dimension M
         mod_cent = mod_cent.unfold(dimension=1, size=(n_utter - 1), step=1) # (N, M, D, M - 1)
         mod_cent = mod_cent.mean(dim=-1) # (N, M, D)
+        mod_cent = mod_cent.reshape(-1, d_emb) # (N * M, D)
 
         # Replace centroids w/ mod_cent, when j (dim 0) == k (dim 2)
         # need to replace n_utter vectors for every speaker (hence n_utter * n_speakers)
@@ -102,7 +103,7 @@ class GE2E(nn.Module):
         unfold = cat.unfold(2, n_speakers - 1, 1) # (N, M, N, N - 1)
         unfold = unfold.reshape(-1, n_speakers - 1) # (N * M * N, N - 1)
         
-        indices = indices = torch.arange(n_utter * n_speakers).reshape(n_speakers, -1) * n_speakers \
+        indices = torch.arange(n_utter * n_speakers).reshape(n_speakers, -1) * n_speakers \
             + torch.arange(n_speakers).unsqueeze(-1) # offset by the index of speaker
         indices = indices.reshape(-1).to(input.device)
 
