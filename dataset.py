@@ -46,7 +46,7 @@ class GE2E_Dataset(data.Dataset):
         # Cut utterances to be of length min_seg_length
         start = [random.randint(0, uttr.shape[0] - self.min_seg_length) for uttr in utterances]
         cut_utterances = [uttr[i: i + self.min_seg_length] for uttr, i in zip(utterances, start)]
-        return cut_utterances
+        return cut_utterances # of shapes (seq_length, dim)
         
     def _load_speakers(self, path):
         items = {}
