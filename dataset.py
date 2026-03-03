@@ -12,8 +12,9 @@ from torch.utils import data
 from torch.nn.utils.rnn import pad_sequence
 
 class GE2E_Dataset(data.Dataset):
-    def __init__(self, filepath: str, n_utterances: int, min_seg_length: int, languages: list):
+    def __init__(self, filepath: str, data_dir: str, n_utterances: int, min_seg_length: int, languages: list):
         self.filepath = filepath
+        self.data_dir = data_dir
         self.speakers: dict = self._load_speakers(filepath)
         self.n_utterances = n_utterances
         self.min_seg_length = min_seg_length
@@ -38,7 +39,7 @@ class GE2E_Dataset(data.Dataset):
 
         feat_paths = random.sample(items, self.n_utterances)
         utterances = [
-            torch.load(os.path.join(self.filepath, path)) for path in feat_paths
+            torch.load(os.path.join(self.data_dir, path)) for path in feat_paths
         ]
 
         # Cut utterances to be of length min_seg_length
@@ -64,8 +65,8 @@ def collate_batch(batch):
     flatten = [sample for s in batch for sample in s]
     return pad_sequence(flatten, batch_first=True, padding_value=0)
 
-def build_loader(filepath, n_speakers, n_utterances, min_seg_length, num_workers, language):
-    dataset = GE2E_Dataset(filepath, n_utterances, min_seg_length, language)
+def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, num_workers, language):
+    dataset = GE2E_Dataset(filepath, data_dir, n_utterances, min_seg_length, language)
         
     train_set, validation_set = data.random_split(dataset, [len(dataset) - n_speakers, n_speakers])
 

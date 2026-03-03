@@ -11,6 +11,7 @@ from solver import Solver
 
 def main(config):
     train_ld, validation_ld = build_loader(filepath=config.filepath,
+                                        data_dir=config.data_dir,
                                         n_speakers=config.n_speakers,
                                         n_utterances=config.n_utterances,
                                         min_seg_length=config.min_seg_length,
@@ -33,6 +34,7 @@ if __name__ == "__main__":
     PARSER = ArgumentParser()
     PARSER.add_argument("filepath", type=str)
     PARSER.add_argument("model_dir", type=str)
+    PARSER.add_argument("data_dir", type=str)
     PARSER.add_argument("--n_speakers", type=int, default=64)
     PARSER.add_argument("--n_utterances", type=int, default=10)
     PARSER.add_argument("--min_seg_length", type=int, default=160)
