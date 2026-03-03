@@ -76,6 +76,6 @@ class Solver():
             if i % self.save == 0:
                 checkpoint = self.checkpoints + f'/dvector-epoch{i}.pt'
                 self.dvector.cpu()
-                self.dvector.save(checkpoint)
+                torch.save(self.dvector, checkpoint)
                 self.dvector.to(self.device)
 
