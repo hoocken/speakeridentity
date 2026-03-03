@@ -32,7 +32,7 @@ class Solver():
 
         self.checkpoints = model_dir + '/checkpoints/' + datetime.now().strftime("%Y%m%d-%H%M%S")
         try:
-            os.makedir(self.checkpoints)
+            os.mkdir(self.checkpoints)
         except FileExistsError:
             print(f'{self.checkpoints} already exists!')
 
