@@ -59,7 +59,7 @@ class GE2E(nn.Module):
         # it has n_speaker amount of rows. Need to replace only current speaker for that n_speaker rows.
         indices = torch.arange(n_utter * n_speakers).reshape(n_speakers, -1) * n_speakers \
             + torch.arange(n_speakers).unsqueeze(-1) # offset by the index of speaker
-        indices = indices.reshape(-1)
+        indices = indices.reshape(-1).to(input.device)
         transformed_cent = centroids.index_copy(0, indices, mod_cent)
         transformed_cent = transformed_cent.view_as(dvecs)
 
@@ -79,7 +79,7 @@ class GE2E(nn.Module):
         :type input: Tensor of shape (N, M, N)
         """
         n_speakers, _, _ = input.shape
-        diags = input[torch.arange(n_speakers), :, torch.arange(n_speakers)] # (N, M)
+        diags = input[torch.arange(n_speakers).to(input.device), :, torch.arange(n_speakers).to(input.device)] # (N, M)
         log_exp = torch.logcumsumexp(input, dim=-1)[:, :, -1] # (N, M)
         return -diags + log_exp
 
@@ -96,7 +96,7 @@ class GE2E(nn.Module):
         """
         n_speakers, n_utter, _ = input.shape
         input = torch.sigmoid(input)
-        diags = input[torch.arange(n_speakers), :, torch.arange(n_speakers)] # (N, M)
+        diags = input[torch.arange(n_speakers).to(input.device), :, torch.arange(n_speakers).to(input.device)] # (N, M)
 
         cat = torch.cat([input[:, :, 1:], input[:, :, :-1]], 2)
         unfold = cat.unfold(2, n_speakers - 1, 1) # (N, M, N, N - 1)
@@ -104,7 +104,7 @@ class GE2E(nn.Module):
         
         indices = indices = torch.arange(n_utter * n_speakers).reshape(n_speakers, -1) * n_speakers \
             + torch.arange(n_speakers).unsqueeze(-1) # offset by the index of speaker
-        indices = indices.reshape(-1)
+        indices = indices.reshape(-1).to(input.device)
 
         trunc = unfold[indices, :] # (N * M, N - 1)
         trunc = trunc.reshape(n_speakers, n_utter, n_speakers - 1) # (N, M, N-1)
