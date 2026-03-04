@@ -23,10 +23,10 @@ def main(config):
                     validation_ld=validation_ld,
                     n_speakers=config.n_speakers,
                     n_utterances=config.n_utterances,
-                    decay=10,
-                    save=10,
-                    epochs=200,
-                    lr=0.1)
+                    decay=config.decay,
+                    save=config.save,
+                    epochs=config.epochs,
+                    lr=0.config.lr)
     
     solver.train()
 
@@ -38,6 +38,8 @@ if __name__ == "__main__":
     PARSER.add_argument("--n_speakers", type=int, default=16)
     PARSER.add_argument("--n_utterances", type=int, default=20)
     PARSER.add_argument("--min_seg_length", type=int, default=160)
+    PARSER.add_argument("--lr", type=float, default=0.1)
+    PARSER.add_argument("--epochs", type=int, default=200)
     PARSER.add_argument("--save", type=int, default=10)
     PARSER.add_argument("--decay", type=int, default=10)
     PARSER.add_argument("--num_workers", type=int, default=cpu_count())
