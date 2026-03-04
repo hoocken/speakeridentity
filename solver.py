@@ -62,11 +62,11 @@ class Solver():
             self.optimizer.zero_grad()
             loss.backward()
 
-            grad_norm = torch.nn.utils.clip_grad_norm_(
-                    list(self.dvector.parameters()) + list(self.criteria.parameters()),
-                    max_norm=3,
-                    norm_type=2.0,
-                )
+            # grad_norm = torch.nn.utils.clip_grad_norm_(
+            #         list(self.dvector.parameters()) + list(self.criteria.parameters()),
+            #         max_norm=3,
+            #         norm_type=2.0,
+            #     )
 
             self.optimizer.step()
             self.scheduler.step() 
