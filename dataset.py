@@ -77,8 +77,12 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         collate_fn=collate_batch,
         shuffle=True,
         drop_last=True,
-        num_workers=num_workers
+        num_workers=num_workers,
+        multiprocessing_context='spawn'
     )
+
+    print('test loader:')
+    print(next(iter(train_ld)))
 
     validation_ld = data.DataLoader(
         validation_set,
@@ -86,7 +90,8 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         collate_fn=collate_batch,
         shuffle=True,
         drop_last=True,
-        num_workers=num_workers
+        num_workers=num_workers,
+        multiprocessing_context='spawn'
     )
 
     return train_ld, validation_ld
