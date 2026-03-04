@@ -1,3 +1,8 @@
+# Load a dataset
+# How? From which dataset? No need to know, what need to know is the path. From train.py probs
+# Convert data to Mel spectrograms, need to research this <-
+
+# Choose t = [140, 180] for amount of frames, enforce all utterances of a batch to be this t
 import json
 import os
 import random
@@ -5,7 +10,6 @@ import torch
 
 from torch.utils import data
 from torch.nn.utils.rnn import pad_sequence
-from dataloader import MultiEpochsDataLoader
 
 class GE2E_Dataset(data.Dataset):
     def __init__(self, filepath: str, data_dir: str, n_utterances: int, min_seg_length: int, languages: list):
@@ -67,7 +71,7 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
     print(len(dataset))
     train_set, validation_set = data.random_split(dataset, [len(dataset) - n_speakers, n_speakers])
 
-    train_ld = MultiEpochsDataLoader(
+    train_ld = data.DataLoader(
         train_set,
         batch_size=n_speakers,
         collate_fn=collate_batch,
@@ -76,7 +80,7 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         num_workers=num_workers
     )
 
-    validation_ld = MultiEpochsDataLoader(
+    validation_ld = data.DataLoader(
         validation_set,
         batch_size=n_speakers,
         collate_fn=collate_batch,
