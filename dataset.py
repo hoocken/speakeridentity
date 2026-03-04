@@ -76,7 +76,7 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         batch_size=n_speakers,
         collate_fn=collate_batch,
         shuffle=True,
-        drop_last=False,
+        drop_last=True,
         num_workers=num_workers
     )
 
