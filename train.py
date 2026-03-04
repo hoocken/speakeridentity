@@ -26,7 +26,7 @@ def main(config):
                     decay=config.decay,
                     save=config.save,
                     epochs=config.epochs,
-                    lr=0.config.lr)
+                    lr=config.lr)
     
     solver.train()
 
