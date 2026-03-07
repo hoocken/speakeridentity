@@ -47,7 +47,7 @@ if __name__ == "__main__":
     PARSER.add_argument("--batch_per_valid", type=int, default=10)
     PARSER.add_argument("--num_workers", type=int, default=cpu_count())
     PARSER.add_argument("--language", nargs='*', default=['English(US)', 'Japanese', 'Korean', 'Chinese'])
-    PARSER.add_argument("--load_state", type=int)
+    PARSER.add_argument("--load_state", type=str)
 
     config = PARSER.parse_args()
     main(config)
