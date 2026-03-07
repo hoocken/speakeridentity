@@ -74,7 +74,6 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         shuffle=True,
         drop_last=True,
         num_workers=num_workers,
-        multiprocessing_context='spawn',
     )
 
     print('try printing')
@@ -87,7 +86,6 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         shuffle=True,
         drop_last=True,
         num_workers=num_workers,
-        multiprocessing_context='spawn'
     )
 
     return train_ld, validation_ld
