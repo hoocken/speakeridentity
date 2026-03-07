@@ -24,6 +24,7 @@ class D_VECTOR(nn.Module):
         :param x: Tensor of shape (Batch, Sequence Length, Input Dimension)
         :returns dvector: D-Vector of shape (Batch, Output Dimension)
         """   
+        print(x.shape)
         lstm_outs, _ = self.lstm(x) # (Batch, Seq, 1 * hidden_size)
         embedding_vector = self.embedding(lstm_outs[:, -1, :]) # Take output of last sequence, now (Batch, Dim Emb)
         norm = embedding_vector.norm(p=2, dim=-1, keepdim=True)
