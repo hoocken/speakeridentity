@@ -66,38 +66,6 @@ class Solver():
 
         return sum(running_valid_loss)/len(running_valid_loss)
 
-
-    def training(self):
-        running_train_loss = deque(maxlen=100)
-        running_grad_norm = deque(maxlen=100)
-        
-        for item in tqdm(self.train_ld, desc='Training'):
-            batch = item.to(self.device)
-            embeddings = self.dvector(batch).view(self.n_speakers, self.n_utterances, -1) # (N, M, D)
-            loss = self.criteria(embeddings)
-
-            self.optimizer.zero_grad()
-            loss.backward()
-
-            self.dvector.embedding.weight.grad *= 0.5
-            self.dvector.embedding.bias.grad *= 0.5
-            self.criteria.w.grad *= 0.01
-            self.criteria.b.grad *= 0.01
-
-            grad_norm = torch.nn.utils.clip_grad_norm_(
-                    list(self.dvector.parameters()) + list(self.criteria.parameters()),
-                    max_norm=3,
-                    norm_type=2.0,
-                )
-
-            self.optimizer.step()
-            self.scheduler.step() 
-
-            running_train_loss.append(loss.item())
-            running_grad_norm.append(grad_norm.item())
-
-        return sum(running_train_loss)/len(running_train_loss), sum(running_grad_norm)/len(running_grad_norm)
-
     def train(self):
         pbar = tqdm(total=self.valid_every, ncols=0, desc="Train")
         running_train_loss = deque(maxlen=100)
