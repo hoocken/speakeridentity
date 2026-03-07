@@ -25,9 +25,10 @@ def main(config):
                     n_utterances=config.n_utterances,
                     decay=config.decay,
                     save=config.save,
-                    epochs=config.epochs,
+                    valid_every=config.valid_every,
                     lr=config.lr,
-                    load_state=config.load_state)
+                    load_state=config.load_state,
+                    batch_per_valid=config.batch_per_valid)
     
     solver.train()
 
@@ -40,9 +41,10 @@ if __name__ == "__main__":
     PARSER.add_argument("--n_utterances", type=int, default=20)
     PARSER.add_argument("--min_seg_length", type=int, default=160)
     PARSER.add_argument("--lr", type=float, default=0.01)
-    PARSER.add_argument("--epochs", type=int, default=200)
-    PARSER.add_argument("--save", type=int, default=10)
-    PARSER.add_argument("--decay", type=int, default=10)
+    PARSER.add_argument("--save", type=int, default=500)
+    PARSER.add_argument("--decay", type=int, default=10000)
+    PARSER.add_argument("--valid_every", type=int, default=100)
+    PARSER.add_argument("--batch_per_valid", type=int, default=10)
     PARSER.add_argument("--num_workers", type=int, default=cpu_count())
     PARSER.add_argument("--language", nargs='*', default=['English(US)', 'Japanese', 'Korean', 'Chinese'])
     PARSER.add_argument("--load_state", type=int)
