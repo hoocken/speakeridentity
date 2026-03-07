@@ -30,39 +30,19 @@ class GE2E_Dataset(data.Dataset):
     def __len__(self):
         return len(self.infos.keys())
     
-    # def __getitem__(self, idx):
-    #     idx_k = list(self.infos.keys())[idx]
-    #     items = self.infos[idx_k]
-
-    #     feat_paths = random.sample(items, self.n_utterances)
-    #     utterances = [
-    #         torch.squeeze(torch.load(os.path.join(self.data_dir, path))).transpose(0, 1) for path in feat_paths
-    #     ]
-
-    #     # Cut utterances to be of length min_seg_length
-    #     start = [random.randint(0, uttr.shape[0] - self.min_seg_length) for uttr in utterances]
-    #     cut_utterances = [uttr[i: i + self.min_seg_length] for uttr, i in zip(utterances, start)]
-    #     return cut_utterances # of shapes (seq_length, dim)
-
     def __getitem__(self, idx):
         idx_k = list(self.infos.keys())[idx]
         items = self.infos[idx_k]
 
-        # Original: feat_paths = random.sample(items, self.n_utterances)
-        # Keep this line if you need random sampling for subsequent dummy data steps
-        random.sample(items, self.n_utterances) # Still need to simulate the sampling effect
-
-        # *** TEMPORARY MODIFICATION: Return dummy data instead of loading actual files ***
-        # Assuming your features have a dimension of 80 (you might need to adjust this)
-        dummy_utterances = [
-            torch.randn(self.min_seg_length, 80) # Adjust '80' to your actual feature dimension
-            for _ in range(self.n_utterances)
+        feat_paths = random.sample(items, self.n_utterances)
+        utterances = [
+            torch.squeeze(torch.load(os.path.join(self.data_dir, path))).transpose(0, 1) for path in feat_paths
         ]
 
-        # The original code for cutting utterances can be skipped or simplified if needed
-        # For this test, we are making dummy utterances of the correct final length
-
-        return dummy_utterances # of shapes (seq_length, dim)
+        # Cut utterances to be of length min_seg_length
+        start = [random.randint(0, uttr.shape[0] - self.min_seg_length) for uttr in utterances]
+        cut_utterances = [uttr[i: i + self.min_seg_length] for uttr, i in zip(utterances, start)]
+        return cut_utterances # of shapes (seq_length, dim)
         
     def _load_speakers(self, path):
         items = {}
