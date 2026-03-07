@@ -91,7 +91,7 @@ class Solver():
             avg_train_loss, avg_grad_norm = self.training()
             self.writer.add_scalar('train/loss', avg_train_loss)
             self.writer.add_scalar('train/grad', avg_grad_norm)
-            print(f'[TRAINING: {i + 1} / {self.epochs}] loss = {avg_train_loss}')
+            print(f'[TRAINING: {i + 1} / {self.epochs}] loss = {avg_train_loss} grad = {avg_grad_norm}')
 
             avg_valid_loss = self.validate()
             self.writer.add_scalar('eval/loss', avg_valid_loss)
