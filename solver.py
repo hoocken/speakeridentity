@@ -69,13 +69,13 @@ class Solver():
             embeddings = self.dvector(batch).view(self.n_speakers, self.n_utterances, -1) # (N, M, D)
             loss = self.criteria(embeddings)
 
+            self.optimizer.zero_grad()
+            loss.backward()
+
             self.dvector.embedding.weight.grad *= 0.5
             self.dvector.embedding.bias.grad *= 0.5
             self.criteria.w.grad *= 0.01
             self.criteria.b.grad *= 0.01
-
-            self.optimizer.zero_grad()
-            loss.backward()
 
             grad_norm = torch.nn.utils.clip_grad_norm_(
                     list(self.dvector.parameters()) + list(self.criteria.parameters()),
