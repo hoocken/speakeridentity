@@ -79,7 +79,7 @@ class Solver():
 
             grad_norm = torch.nn.utils.clip_grad_norm_(
                     list(self.dvector.parameters()) + list(self.criteria.parameters()),
-                    max_norm=2,
+                    max_norm=3,
                     norm_type=2.0,
                 )
 

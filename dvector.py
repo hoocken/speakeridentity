@@ -7,7 +7,7 @@ from torch import Tensor
 from torch.nn.utils.rnn import pad_sequence
 
 class D_VECTOR(nn.Module):
-    def __init__(self, num_layers=3, dim_input=80, dim_cell=256, dim_emb=64, seg_len=160):
+    def __init__(self, num_layers=3, dim_input=80, dim_cell=768, dim_emb=256, seg_len=160):
         super(D_VECTOR, self).__init__()
         self.lstm = nn.LSTM(input_size=dim_input, hidden_size=dim_cell,
                             num_layers=num_layers, batch_first=True) # Sets dim to (Batch, Seq, Feature)
