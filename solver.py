@@ -24,7 +24,7 @@ class Solver():
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.dvector = D_VECTOR(dim_input=80).to(self.device)
         self.criteria = GE2E().to(self.device)
-        self.optimizer = torch.optim.RMSprop(list(self.dvector.parameters()) + list(self.criteria.parameters()), lr=self.lr)
+        self.optimizer = torch.optim.SGD(list(self.dvector.parameters()) + list(self.criteria.parameters()), lr=self.lr)
         self.scheduler = StepLR(self.optimizer, decay, gamma=0.5) # LR decay
 
         self.start = 0
@@ -69,12 +69,17 @@ class Solver():
             embeddings = self.dvector(batch).view(self.n_speakers, self.n_utterances, -1) # (N, M, D)
             loss = self.criteria(embeddings)
 
+            self.dvector.embedding.weight.grad *= 0.5
+            self.dvector.embedding.bias.grad *= 0.5
+            self.criteria.w.grad *= 0.01
+            self.criteria.b.grad *= 0.01
+
             self.optimizer.zero_grad()
             loss.backward()
 
             grad_norm = torch.nn.utils.clip_grad_norm_(
                     list(self.dvector.parameters()) + list(self.criteria.parameters()),
-                    max_norm=5,
+                    max_norm=2,
                     norm_type=2.0,
                 )
 
