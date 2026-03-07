@@ -122,7 +122,7 @@ class GE2E(nn.Module):
         :type input: Tensor of shape (N, M, D)
         :return loss: Total loss calculated through chosen `loss_method`
         """
-        torch.clamp(self.w, 1e-6)
+        # torch.clamp(self.w, 1e-6)
         calc = self.w * self.cosine_similarity(input) + self.b
         return self.embed_loss(calc).sum()
     
