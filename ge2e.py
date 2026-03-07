@@ -81,7 +81,7 @@ class GE2E(nn.Module):
         """
         n_speakers, _, _ = input.shape
         diags = input[torch.arange(n_speakers).to(input.device), :, torch.arange(n_speakers).to(input.device)] # (N, M)
-        log_exp = torch.logcumsumexp(input, dim=-1)[:, :, -1] # (N, M)
+        log_exp = torch.logsumexp(input, dim=-1) # (N, M)
         return -diags + log_exp
 
     def embed_loss_constrast(self, input: Tensor):

@@ -34,14 +34,13 @@ class D_VECTOR(nn.Module):
         """
         Embed utterance using sliding window method of length 160
 
-        :param x: Tensor of shape (1, mel_dim, seg_length)
+        :param x: Tensor of shape (1, seg_length, mel_dim)
         :returns dvector: D-Vector of shape (output dimension)
         """
         step = self.seg_len // 2
-        x = torch.squeeze(x)
-        pad = torch.cat([x, torch.zeros([x.shape[0], step - x.shape[1] % step])], 1)
-        transposed = pad.transpose(0, 1)
-        segments = transposed.unfold(0, self.seg_len, step)
+        x = torch.squeeze(x).transpose(0, 1)
+        pad = torch.cat([x, torch.zeros([step - x.shape[0] % step, x.shape[1]])], 0)
+        segments = pad.unfold(0, self.seg_len, step)
         segments = segments.transpose(1, 2)
 
         embeddings = self.forward(segments)
@@ -54,8 +53,8 @@ class D_VECTOR(nn.Module):
         """
         Embed utterances
 
-        :param x: Tensor of shape (batch, mel_dim, seg_length)
+        :param x: Tensor of shape (batch, seg_length, mel_dim)
         """
-        embed = torch.stack([self.embed_utterance[uttr] for uttr in x]).mean(dim=0)
+        embed = torch.stack([self.embed_utterance(uttr) for uttr in x]).mean(dim=0)
         return embed / (embed.norm(p=2, dim=-1, keepdim=True))
     
