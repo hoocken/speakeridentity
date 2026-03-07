@@ -38,35 +38,30 @@ class GE2E(nn.Module):
         """
         n_speakers, n_utter, d_emb = input.shape
 
-        # Expand dvec to (N, M, N, D)
-        dvecs = input.unsqueeze(2).expand(n_speakers, n_utter, n_speakers, d_emb) # Have same N vector in dim 2 
+        # dvecs: (N, M, N, D) - each e_ji compared to centroids of k
+        dvecs = input.unsqueeze(2).expand(n_speakers, n_utter, n_speakers, d_emb)
 
-        # Build normal centroids from eq. (1)
-        # Make centroid shaped like (N * M, N, D)
-        centroids = input.mean(dim=1).to(input.device) # (N, D)
-        centroids = centroids.unsqueeze(0).expand(n_speakers * n_utter, n_speakers, d_emb) # (N * M, N, D)
-        centroids = centroids.reshape(-1, d_emb) # (N * M * N, D)
+        # regular centroids (N, D)
+        centroids = input.mean(dim=1)  # (N, D)
 
-        # Modified centroids based on eq. (8)
-        mod_cent = torch.cat([input[:, 1:, :], input[:, :-1, :]], dim=1) # Make a long array from index 1 to -2 in dimension M
-        mod_cent = mod_cent.unfold(dimension=1, size=(n_utter - 1), step=1) # (N, M, D, M - 1)
-        mod_cent = mod_cent.mean(dim=-1) # (N, M, D)
-        mod_cent = mod_cent.reshape(-1, d_emb) # (N * M, D)
+        # modified centroids excluding each utterance: (N, M, D)
+        sum_over = input.sum(dim=1, keepdim=True)  # (N, 1, D)
+        mod_cent = (sum_over - input.unsqueeze(1)) / (n_utter - 1)  # (N, M, D)
 
-        # Replace centroids w/ mod_cent, when j (dim 0) == k (dim 2)
-        # need to replace n_utter vectors for every speaker (hence n_utter * n_speakers)
-        # then need to add offset for every speaker, so reshape to a shape of (n_speakers, n_utter)
-        # as our centroid shape is (N * M * N, D) that means every for one speaker and an utterance
-        # it has n_speaker amount of rows. Need to replace only current speaker for that n_speaker rows.
-        indices = torch.arange(n_utter * n_speakers).reshape(n_speakers, -1) * n_speakers \
-            + torch.arange(n_speakers).unsqueeze(-1) # offset by the index of speaker
-        indices = indices.reshape(-1).to(input.device)
-        transformed_cent = centroids.index_copy(0, indices, mod_cent)
-        transformed_cent = transformed_cent.view_as(dvecs)
+        # expand to (N, M, N, D)
+        cent_k = centroids.unsqueeze(0).unsqueeze(0).expand(n_speakers, n_utter, n_speakers, d_emb)
+        mod_k = mod_cent.unsqueeze(2).expand(n_speakers, n_utter, n_speakers, d_emb)
 
-        # Plug into CosineSimilarity
-        # Should be calculate similarity between N vectors of length D (N, M, N, D)
-        return F.cosine_similarity(dvecs, transformed_cent, 3, 1e-6)
+        # mask where speaker j == k (shape (N, M, N, 1))
+        j_idx = torch.arange(n_speakers, device=input.device).view(n_speakers, 1, 1)
+        k_idx = torch.arange(n_speakers, device=input.device).view(1, 1, n_speakers)
+        mask = (j_idx == k_idx).unsqueeze(-1).expand(-1, n_utter, -1, d_emb)
+
+        # choose modified centroid when j==k, else regular centroid
+        transformed_cent = torch.where(mask, mod_k, cent_k)
+
+        # cosine similarity over last dim
+        return F.cosine_similarity(dvecs, transformed_cent, dim=-1, eps=1e-6)
 
     def embed_loss_softmax(self, input: Tensor):
         """
