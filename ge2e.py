@@ -46,7 +46,7 @@ class GE2E(nn.Module):
 
         # modified centroids excluding each utterance: (N, M, D)
         sum_over = input.sum(dim=1, keepdim=True)  # (N, 1, D)
-        mod_cent = (sum_over - input.unsqueeze(1)) / (n_utter - 1)  # (N, M, D)
+        mod_cent = (sum_over - input) / (n_utter - 1)  # (N, M, D)
 
         # expand to (N, M, N, D)
         cent_k = centroids.unsqueeze(0).unsqueeze(0).expand(n_speakers, n_utter, n_speakers, d_emb)
