@@ -62,6 +62,7 @@ class Solver():
 
     def training(self):
         running_train_loss = deque(maxlen=100)
+        running_grad_norm = deque(maxlen=100)
         
         for item in tqdm(self.train_ld, desc='Training'):
             batch = item.to(self.device)
@@ -81,13 +82,15 @@ class Solver():
             self.scheduler.step() 
 
             running_train_loss.append(loss.item())
+            running_grad_norm.append(grad_norm.item())
 
-        return sum(running_train_loss)/len(running_train_loss)
+        return sum(running_train_loss)/len(running_train_loss), sum(running_grad_norm)/len(running_grad_norm)
 
     def train(self):
         for i in range(self.start, self.epochs):
-            avg_train_loss = self.training()
+            avg_train_loss, avg_grad_norm = self.training()
             self.writer.add_scalar('train/loss', avg_train_loss)
+            self.writer.add_scalar('train/grad', avg_grad_norm)
             print(f'[TRAINING: {i + 1} / {self.epochs}] loss = {avg_train_loss}')
 
             avg_valid_loss = self.validate()
