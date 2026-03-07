@@ -33,3 +33,9 @@ class _RepeatSampler(object):
     def __iter__(self):
         while True:
             yield from iter(self.sampler)
+
+
+def infinite_iterator(dataloader):
+    while True:
+        for batch in iter(dataloader):
+            yield batch
