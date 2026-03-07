@@ -13,7 +13,7 @@ from ge2e import GE2E
 
 
 class Solver():
-    def __init__(self, model_dir, train_ld, validation_ld, lr, n_speakers, n_utterances, decay, epochs, save):
+    def __init__(self, model_dir, train_ld, validation_ld, lr, n_speakers, n_utterances, decay, epochs, save, load_state):
         self.model_dir = model_dir
         self.train_ld = train_ld
         self.validation_ld = validation_ld
@@ -26,6 +26,15 @@ class Solver():
         self.criteria = GE2E().to(self.device)
         self.optimizer = torch.optim.Adam(list(self.dvector.parameters()) + list(self.criteria.parameters()), lr=self.lr)
         self.scheduler = StepLR(self.optimizer, decay, gamma=0.5) # LR decay
+
+        self.start = 0
+
+        if load_state:
+            checkpoint = torch.load(load_state, weights_only=True)
+            self.dvector.load_state_dict(checkpoint['dvector_state_dict'])
+            self.criteria.load_state_dict(checkpoint['criteria_state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.epoch = checkpoint['epoch']
 
         self.epochs = epochs
         self.save = save
@@ -76,7 +85,7 @@ class Solver():
         return sum(running_train_loss)/len(running_train_loss)
 
     def train(self):
-        for i in range(self.epochs):
+        for i in range(self.start, self.epochs):
             avg_train_loss = self.training()
             self.writer.add_scalar('train/loss', avg_train_loss)
             print(f'[TRAINING: {i + 1} / {self.epochs}] loss = {avg_train_loss}')
@@ -88,6 +97,12 @@ class Solver():
             if i % self.save == 0:
                 checkpoint = self.checkpoints + f'/dvector-epoch{i}.pt'
                 self.dvector.cpu()
-                torch.save(self.dvector, checkpoint)
+                torch.save({
+                    'epoch': i,
+                    'dvector_state_dict': self.dvector.state_dict(),
+                    'criteria_state_dict': self.criteria.state_dict(),
+                    'optimizer_state_dict': self.optimizer.state_dict(),
+                    'loss': avg_valid_loss,
+                    }, checkpoint)
                 self.dvector.to(self.device)
 

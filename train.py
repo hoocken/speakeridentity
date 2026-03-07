@@ -26,7 +26,8 @@ def main(config):
                     decay=config.decay,
                     save=config.save,
                     epochs=config.epochs,
-                    lr=config.lr)
+                    lr=config.lr,
+                    load_state=config.load_state)
     
     solver.train()
 
@@ -44,6 +45,7 @@ if __name__ == "__main__":
     PARSER.add_argument("--decay", type=int, default=10)
     PARSER.add_argument("--num_workers", type=int, default=cpu_count())
     PARSER.add_argument("--language", nargs='*', default=['English(US)', 'Japanese', 'Korean', 'Chinese'])
-    
+    PARSER.add_argument("--load_state", type=int)
+
     config = PARSER.parse_args()
     main(config)

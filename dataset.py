@@ -76,9 +76,6 @@ def build_loader(filepath, data_dir, n_speakers, n_utterances, min_seg_length, n
         num_workers=num_workers,
     )
 
-    print('try printing')
-    print(next(iter(train_ld)))
-
     validation_ld = MultiEpochsDataLoader(
         validation_set,
         batch_size=n_speakers,
