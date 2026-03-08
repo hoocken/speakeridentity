@@ -43,7 +43,7 @@ class Solver():
             self.criteria.load_state_dict(checkpoint['criteria_state_dict'])
             self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             self.epoch = checkpoint['epoch']
-            self.scheduler.last_epoch = self.epoch
+            self.scheduler = StepLR(self.optimizer, decay, gamma=0.5, last_epoch=self.epoch) # LR decay
 
         self.save = save
 
