@@ -7,8 +7,8 @@ from dvector import D_VECTOR
 
 if __name__ == '__main__':
     PARSER = ArgumentParser()
-    PARSER.add_argument("--load_state", type=str)
-    PARSER.add_argument("--save", type=str)
+    PARSER.add_argument("load_state", type=str)
+    PARSER.add_argument("save", type=str)
     config = PARSER.parse_args()
 
     dvector = D_VECTOR(dim_input=80)
