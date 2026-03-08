@@ -42,7 +42,6 @@ class Solver():
             self.dvector.load_state_dict(checkpoint['dvector_state_dict'])
             self.criteria.load_state_dict(checkpoint['criteria_state_dict'])
             self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-            self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
             self.epoch = checkpoint['epoch']
             self.scheduler.last_epoch = self.epoch
 
