@@ -34,7 +34,7 @@ class Solver():
         self.scheduler = StepLR(self.optimizer, decay, gamma=0.5) # LR decay
 
         self.valid_every = valid_every
-        self.start = 0
+        self.epoch = 0
         self.batch_per_valid = batch_per_valid
 
         if load_state:
