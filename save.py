@@ -15,4 +15,4 @@ if __name__ == '__main__':
     checkpoint = torch.load(config.load_state)
     dvector.load_state_dict(checkpoint['dvector_state_dict'])
 
-    torch.save(dvector, config.save)
+    dvector.save(config.save)
