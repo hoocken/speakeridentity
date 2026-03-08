@@ -11,7 +11,7 @@ if __name__ == '__main__':
     PARSER.add_argument("save", type=str)
     config = PARSER.parse_args()
 
-    dvector = D_VECTOR(dim_input=80)
+    dvector = torch.jit.script(D_VECTOR(dim_input=80))
     checkpoint = torch.load(config.load_state)
     dvector.load_state_dict(checkpoint['dvector_state_dict'])
 
