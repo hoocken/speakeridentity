@@ -39,7 +39,7 @@ class D_VECTOR(nn.Module):
         """
         step = self.seg_len // 2
         x = torch.squeeze(x).transpose(0, 1)
-        pad = torch.cat([x, torch.zeros([step - x.shape[0] % step, x.shape[1]]).to(x.device)], 0)
+        pad = torch.cat([x, torch.zeros([max(160 - x.shape[0], step - x.shape[0] % step), x.shape[1]]).to(x.device)], 0)
         segments = pad.unfold(0, self.seg_len, step).to(x.device)
         segments = segments.transpose(1, 2)
 
