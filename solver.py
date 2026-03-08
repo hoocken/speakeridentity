@@ -103,11 +103,11 @@ class Solver():
             pbar.set_postfix(loss=avg_train_loss, grad_norm=avg_grad_norm)
 
             if i % self.valid_every == 0: 
-                self.writer.add_scalar('train/loss', avg_train_loss)
-                self.writer.add_scalar('train/grad', avg_grad_norm)
+                self.writer.add_scalar('train/loss', avg_train_loss, i)
+                self.writer.add_scalar('train/grad', avg_grad_norm, i)
 
                 avg_valid_loss = self.validate()
-                self.writer.add_scalar('eval/loss', avg_valid_loss)
+                self.writer.add_scalar('eval/loss', avg_valid_loss, i)
                 tqdm.write(f'[EVAL: {i}] loss = {avg_valid_loss}')
 
             if i % self.save == 0:
