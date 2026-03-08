@@ -88,7 +88,7 @@ class Solver():
 
             grad_norm = torch.nn.utils.clip_grad_norm_(
                     list(self.dvector.parameters()) + list(self.criteria.parameters()),
-                    max_norm=3,
+                    max_norm=10,
                     norm_type=2.0,
                 )
 
@@ -109,7 +109,7 @@ class Solver():
 
                 avg_valid_loss = self.validate()
                 self.writer.add_scalar('eval/loss', avg_valid_loss)
-                tqdm.write(f'[EVAL: {i + 1}] loss = {avg_valid_loss}')
+                tqdm.write(f'[EVAL: {i}] loss = {avg_valid_loss}')
 
             if i % self.save == 0:
                 checkpoint = self.checkpoints + f'/dvector-epoch{i}.pt'
