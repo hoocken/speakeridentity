@@ -29,7 +29,7 @@ class D_VECTOR(nn.Module):
         norm = embedding_vector.norm(p=2, dim=-1, keepdim=True)
         return embedding_vector / norm # Normalized dvector
     
-    @torch.compile(fullgraph=True)
+    @torch.jit.export
     def embed_utterance(self, x):
         """
         Embed utterance using sliding window method of length 160
@@ -48,7 +48,7 @@ class D_VECTOR(nn.Module):
         embed = embed.div(embed.norm(p=2, dim=-1, keepdim=True)) # Normalize
         return embed
     
-    @torch.compile(fullgraph=True)
+    @torch.jit.export
     def embed_utterances(self, x):
         """
         Embed utterances
