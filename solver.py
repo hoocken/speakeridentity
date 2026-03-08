@@ -42,7 +42,9 @@ class Solver():
             self.dvector.load_state_dict(checkpoint['dvector_state_dict'])
             self.criteria.load_state_dict(checkpoint['criteria_state_dict'])
             self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
             self.epoch = checkpoint['epoch']
+            self.scheduler.last_epoch = self.epoch
 
         self.save = save
 
@@ -67,11 +69,11 @@ class Solver():
         return sum(running_valid_loss)/len(running_valid_loss)
 
     def train(self):
-        pbar = tqdm(total=self.valid_every, ncols=0, desc="Train")
+        pbar = tqdm(total=self.valid_every, initial=self.epoch, ncols=0, desc="Train")
         running_train_loss = deque(maxlen=100)
         running_grad_norm = deque(maxlen=100)
         
-        for i in count(start=1):
+        for i in count(start=self.epoch):
             batch = next(self.train_iter).to(self.device)
             embeddings = self.dvector(batch).view(self.n_speakers, self.n_utterances, -1) # (N, M, D)
             loss = self.criteria(embeddings)
@@ -117,6 +119,7 @@ class Solver():
                     'dvector_state_dict': self.dvector.state_dict(),
                     'criteria_state_dict': self.criteria.state_dict(),
                     'optimizer_state_dict': self.optimizer.state_dict(),
+                    'scheduler_state_dict': self.scheduler.state_dict(),
                     'loss': avg_valid_loss,
                     }, checkpoint)
                 self.dvector.to(self.device)
